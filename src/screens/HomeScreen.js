@@ -17,6 +17,7 @@ class HomeScreen extends Component {
         };
         firestore()
             .collection('Expenses')
+            .orderBy('createdAt', 'asc')
             .get()
             .then(querySnapshot => {
                 const results = [];
@@ -48,6 +49,16 @@ class HomeScreen extends Component {
                     });
                     this.setState({expenses, form: initialForm});
                 });
+            });
+    };
+    onDelete = id => {
+        firestore()
+            .collection('Expenses')
+            .doc(id)
+            .delete()
+            .then(() => {
+                const expenses = this.state.expenses.filter(i => i.id !== id);
+                this.setState({expenses});
             });
     };
     render() {
@@ -82,15 +93,22 @@ class HomeScreen extends Component {
                         />
                     </View>
 
-                    {this.state.expenses.map(record => (
-                        <View
-                            key={record.id}
-                            style={{borderWidth: 0.25, padding: 5}}>
-                            <Text>
-                                {record.category} - {record.price}
-                            </Text>
-                        </View>
-                    ))}
+                    <View style={{marginTop: 10}}>
+                        {this.state.expenses.map(record => (
+                            <View
+                                key={record.id}
+                                style={{borderWidth: 0.25, padding: 5}}>
+                                <Text>
+                                    {record.category} - {record.price}
+                                    <Button
+                                        style={Styles.formButton}
+                                        title={'x'}
+                                        onPress={() => this.onDelete(record.id)}
+                                    />
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
                 </ScrollView>
             </View>
         );
