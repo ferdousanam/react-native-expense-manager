@@ -1,51 +1,97 @@
 import React, {Component} from 'react';
-import {Button, Text, TextInput, View} from 'react-native';
+import {Button, ScrollView, Text, TextInput, View} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
+import Styles from '../styles';
 
+const initialForm = {
+    category: null,
+    price: null,
+};
 class HomeScreen extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            form: {
-                category: null,
-                price: null,
-            },
+            expenses: [],
+            form: initialForm,
         };
-
-        const usersCollection = firestore().collection('Expenses');
-        console.log(usersCollection);
+        firestore()
+            .collection('Expenses')
+            .get()
+            .then(querySnapshot => {
+                const results = [];
+                querySnapshot.forEach(documentSnapshot => {
+                    results.push({
+                        id: documentSnapshot.id,
+                        ...documentSnapshot.data(),
+                    });
+                });
+                this.setState({expenses: results});
+            });
     }
     setFormData = (key, value) => {
         this.setState({form: {...this.state.form, [key]: value}});
     };
     onSubmit = () => {
-        console.log(this.state.form);
         firestore()
             .collection('Expenses')
             .add({
                 ...this.state.form,
                 createdAt: firestore.FieldValue.serverTimestamp(),
             })
-            .then(() => {
-                console.log('Expenses added!');
+            .then(documentReference => {
+                documentReference.get().then(documentSnapshot => {
+                    const expenses = this.state.expenses;
+                    expenses.push({
+                        id: documentSnapshot.id,
+                        ...documentSnapshot.data(),
+                    });
+                    this.setState({expenses, form: initialForm});
+                });
             });
     };
     render() {
         return (
-            <View>
-                <Text>Home Screen</Text>
-                <TextInput
-                    placeholder={'Category'}
-                    value={this.state.form.category}
-                    onChangeText={value => this.setFormData('category', value)}
-                />
-                <TextInput
-                    placeholder={'Price'}
-                    value={this.state.form.price}
-                    onChangeText={value => this.setFormData('price', value)}
-                />
-                <Button title={'Save'} onPress={this.onSubmit} />
+            <View style={Styles.topContainer}>
+                <ScrollView contentInsetAdjustmentBehavior="automatic">
+                    <View style={Styles.textInputBox}>
+                        <TextInput
+                            style={Styles.textInput}
+                            placeholder={'Category'}
+                            value={this.state.form.category}
+                            onChangeText={value =>
+                                this.setFormData('category', value)
+                            }
+                        />
+                    </View>
+                    <View style={Styles.textInputBox}>
+                        <TextInput
+                            style={Styles.textInput}
+                            placeholder={'Price'}
+                            value={this.state.form.price}
+                            onChangeText={value =>
+                                this.setFormData('price', value)
+                            }
+                        />
+                    </View>
+                    <View>
+                        <Button
+                            style={Styles.formButton}
+                            title={'Save'}
+                            onPress={this.onSubmit}
+                        />
+                    </View>
+
+                    {this.state.expenses.map(record => (
+                        <View
+                            key={record.id}
+                            style={{borderWidth: 0.25, padding: 5}}>
+                            <Text>
+                                {record.category} - {record.price}
+                            </Text>
+                        </View>
+                    ))}
+                </ScrollView>
             </View>
         );
     }
