@@ -1,14 +1,12 @@
 import type {Node} from 'react';
 import React from 'react';
-import {SafeAreaView} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import HomeScreen from './src/screens/HomeScreen';
-import Styles from './src/styles';
+import Main from './src/layouts/Main';
 
 const App: () => Node = () => {
     return (
         <SafeAreaProvider>
-            <HomeScreen />
+            <Main />
         </SafeAreaProvider>
     );
 };

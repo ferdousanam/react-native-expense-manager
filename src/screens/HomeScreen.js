@@ -1,15 +1,10 @@
 import React, {Component} from 'react';
 import {FlatList, Text, View} from 'react-native';
 import {Button} from '@rneui/base';
-import {Card, Icon, Input} from '@rneui/themed';
+import {Card, Icon} from '@rneui/themed';
 import firestore from '@react-native-firebase/firestore';
 import Header from '../components/Header';
 import Styles from '../styles';
-
-const initialForm = {
-    category: null,
-    price: null,
-};
 
 class HomeScreen extends Component {
     constructor(props) {
@@ -17,8 +12,12 @@ class HomeScreen extends Component {
 
         this.state = {
             expenses: [],
-            form: initialForm,
         };
+
+        this.loadItems();
+    }
+
+    loadItems = () => {
         firestore()
             .collection('Expenses')
             .orderBy('createdAt', 'asc')
@@ -33,33 +32,14 @@ class HomeScreen extends Component {
                 });
                 this.setState({expenses: results});
             });
-    }
-
-    setFormData = (key, value) => {
-        this.setState({form: {...this.state.form, [key]: value}});
     };
 
-    onSubmit = () => {
-        firestore()
-            .collection('Expenses')
-            .add({
-                ...this.state.form,
-                createdAt: firestore.FieldValue.serverTimestamp(),
-            })
-            .then(documentReference => {
-                documentReference.get().then(documentSnapshot => {
-                    const expenses = this.state.expenses;
-                    expenses.push({
-                        id: documentSnapshot.id,
-                        ...documentSnapshot.data(),
-                    });
-                    this.setState({expenses, form: initialForm});
-                });
-            });
+    onCreate = () => {
+        this.props.navigation.navigate('CreateExpenseScreen');
     };
 
     onEdit = item => {
-        this.setState({form: item});
+        this.props.navigation.navigate('CreateExpenseScreen', {item: item});
     };
 
     onDelete = id => {
@@ -79,25 +59,11 @@ class HomeScreen extends Component {
                 <Header title={'Home'} />
 
                 <View style={Styles.topContainer}>
-                    <Input
-                        style={Styles.textInput}
-                        placeholder={'Category'}
-                        value={this.state.form.category}
-                        onChangeText={value =>
-                            this.setFormData('category', value)
-                        }
-                    />
-                    <Input
-                        style={Styles.textInput}
-                        placeholder={'Price'}
-                        value={this.state.form.price}
-                        onChangeText={value => this.setFormData('price', value)}
-                    />
                     <View>
                         <Button
                             style={Styles.formButton}
-                            title={'Save'}
-                            onPress={this.onSubmit}
+                            title={'Create'}
+                            onPress={this.onCreate}
                         />
                     </View>
 
