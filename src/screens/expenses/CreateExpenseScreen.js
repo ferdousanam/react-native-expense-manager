@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import {View} from 'react-native';
 import {Button} from '@rneui/base';
-import {Input} from '@rneui/themed';
+import {Icon, Input} from '@rneui/themed';
 import firestore from '@react-native-firebase/firestore';
-import Header from '../components/Header';
-import Styles from '../styles';
+import Header from '../../components/Header';
+import Styles from '../../styles';
 
 const initialForm = {
     category: null,
@@ -14,10 +14,10 @@ const initialForm = {
 class CreateExpenseScreen extends Component {
     constructor(props) {
         super(props);
-        const item = props.route.params ? props.route.params.item : null;
 
         this.state = {
-            form: item || initialForm,
+            loading: false,
+            form: initialForm,
         };
     }
 
@@ -26,6 +26,7 @@ class CreateExpenseScreen extends Component {
     };
 
     onSubmit = () => {
+        this.setState({loading: true});
         firestore()
             .collection('Expenses')
             .add({
@@ -42,23 +43,25 @@ class CreateExpenseScreen extends Component {
                     // this.setState({expenses, form: initialForm});
                     this.setState({form: initialForm});
                 });
+                this.setState({loading: false});
             });
     };
 
-    onEdit = item => {
-        this.setState({form: item});
+    renderHeader = () => {
+        return <Header title={'Create Expense'} />;
     };
 
     render() {
+        const {form, loading} = this.state;
         return (
             <>
-                <Header title={'Create Expense'} />
+                {this.renderHeader()}
 
                 <View style={Styles.topContainer}>
                     <Input
                         style={Styles.textInput}
                         placeholder={'Category'}
-                        value={this.state.form.category}
+                        value={form.category}
                         onChangeText={value =>
                             this.setFormData('category', value)
                         }
@@ -66,16 +69,18 @@ class CreateExpenseScreen extends Component {
                     <Input
                         style={Styles.textInput}
                         placeholder={'Price'}
-                        value={this.state.form.price}
+                        value={form.price}
                         onChangeText={value => this.setFormData('price', value)}
                         keyboardType={'numeric'}
                     />
                     <View>
                         <Button
                             style={Styles.formButton}
-                            title={'Save'}
                             onPress={this.onSubmit}
-                        />
+                            loading={loading}>
+                            Save
+                            <Icon name="save" color="white" />
+                        </Button>
                     </View>
                 </View>
             </>

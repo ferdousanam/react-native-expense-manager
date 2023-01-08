@@ -39,7 +39,7 @@ class HomeScreen extends Component {
     };
 
     onEdit = item => {
-        this.props.navigation.navigate('CreateExpenseScreen', {item: item});
+        this.props.navigation.navigate('EditExpenseScreen', {item: item});
     };
 
     onDelete = id => {
