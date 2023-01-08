@@ -68,6 +68,7 @@ class CreateExpenseScreen extends Component {
                         placeholder={'Price'}
                         value={this.state.form.price}
                         onChangeText={value => this.setFormData('price', value)}
+                        keyboardType={'numeric'}
                     />
                     <View>
                         <Button
