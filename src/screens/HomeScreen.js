@@ -1,12 +1,16 @@
 import React, {Component} from 'react';
-import {Button, ScrollView, Text, TextInput, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
+import {Button} from '@rneui/base';
+import {Card, Icon, Input} from '@rneui/themed';
 import firestore from '@react-native-firebase/firestore';
+import Header from '../components/Header';
 import Styles from '../styles';
 
 const initialForm = {
     category: null,
     price: null,
 };
+
 class HomeScreen extends Component {
     constructor(props) {
         super(props);
@@ -30,9 +34,11 @@ class HomeScreen extends Component {
                 this.setState({expenses: results});
             });
     }
+
     setFormData = (key, value) => {
         this.setState({form: {...this.state.form, [key]: value}});
     };
+
     onSubmit = () => {
         firestore()
             .collection('Expenses')
@@ -51,6 +57,11 @@ class HomeScreen extends Component {
                 });
             });
     };
+
+    onEdit = item => {
+        this.setState({form: item});
+    };
+
     onDelete = id => {
         firestore()
             .collection('Expenses')
@@ -61,30 +72,27 @@ class HomeScreen extends Component {
                 this.setState({expenses});
             });
     };
+
     render() {
         return (
-            <View style={Styles.topContainer}>
-                <ScrollView contentInsetAdjustmentBehavior="automatic">
-                    <View style={Styles.textInputBox}>
-                        <TextInput
-                            style={Styles.textInput}
-                            placeholder={'Category'}
-                            value={this.state.form.category}
-                            onChangeText={value =>
-                                this.setFormData('category', value)
-                            }
-                        />
-                    </View>
-                    <View style={Styles.textInputBox}>
-                        <TextInput
-                            style={Styles.textInput}
-                            placeholder={'Price'}
-                            value={this.state.form.price}
-                            onChangeText={value =>
-                                this.setFormData('price', value)
-                            }
-                        />
-                    </View>
+            <>
+                <Header title={'Home'} />
+
+                <View style={Styles.topContainer}>
+                    <Input
+                        style={Styles.textInput}
+                        placeholder={'Category'}
+                        value={this.state.form.category}
+                        onChangeText={value =>
+                            this.setFormData('category', value)
+                        }
+                    />
+                    <Input
+                        style={Styles.textInput}
+                        placeholder={'Price'}
+                        value={this.state.form.price}
+                        onChangeText={value => this.setFormData('price', value)}
+                    />
                     <View>
                         <Button
                             style={Styles.formButton}
@@ -93,24 +101,56 @@ class HomeScreen extends Component {
                         />
                     </View>
 
-                    <View style={{marginTop: 10}}>
-                        {this.state.expenses.map(record => (
-                            <View
-                                key={record.id}
-                                style={{borderWidth: 0.25, padding: 5}}>
-                                <Text>
-                                    {record.category} - {record.price}
-                                    <Button
-                                        style={Styles.formButton}
-                                        title={'x'}
-                                        onPress={() => this.onDelete(record.id)}
-                                    />
-                                </Text>
-                            </View>
-                        ))}
-                    </View>
-                </ScrollView>
-            </View>
+                    <Card>
+                        <FlatList
+                            data={this.state.expenses}
+                            renderItem={({item}) => (
+                                <View
+                                    key={item.id}
+                                    style={{borderWidth: 0.25, padding: 5}}>
+                                    <Text>
+                                        {item.category} - {item.price}
+                                    </Text>
+                                    <View
+                                        style={[
+                                            Styles.row,
+                                            {marginVertical: 10},
+                                        ]}>
+                                        <View style={{marginRight: 5}}>
+                                            <Button
+                                                size={'sm'}
+                                                color={'primary'}
+                                                onPress={() =>
+                                                    this.onEdit(item)
+                                                }>
+                                                <Icon
+                                                    type="antdesign"
+                                                    name="edit"
+                                                    color="white"
+                                                />
+                                            </Button>
+                                        </View>
+                                        <View>
+                                            <Button
+                                                size={'sm'}
+                                                color={'error'}
+                                                onPress={() =>
+                                                    this.onDelete(item.id)
+                                                }>
+                                                <Icon
+                                                    type="antdesign"
+                                                    name="delete"
+                                                    color="white"
+                                                />
+                                            </Button>
+                                        </View>
+                                    </View>
+                                </View>
+                            )}
+                        />
+                    </Card>
+                </View>
+            </>
         );
     }
 }
