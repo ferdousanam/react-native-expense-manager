@@ -1,9 +1,18 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Header as HeaderRNE, Icon} from '@rneui/themed';
+import {Linking, StyleSheet, View} from 'react-native';
+import {Header as HeaderRNE} from '@rneui/themed';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 const Header = ({title}) => {
+    const openGithub = () => {
+        Linking.openURL('https://github.com/ferdousanam');
+    };
+
+    const openFacebook = () => {
+        Linking.openURL('https://facebook.com/ferdous.anam');
+    };
+
     return (
         <>
             <HeaderRNE
@@ -13,14 +22,20 @@ const Header = ({title}) => {
                 }}
                 rightComponent={
                     <View style={styles.headerRight}>
-                        <TouchableOpacity>
-                            <Icon name="description" color="white" />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{marginLeft: 10}}>
-                            <Icon
-                                type="antdesign"
-                                name="rocket1"
+                        <TouchableOpacity onPress={openGithub}>
+                            <FontAwesome5
+                                name="github"
                                 color="white"
+                                size={25}
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{marginLeft: 10}}
+                            onPress={openFacebook}>
+                            <FontAwesome5
+                                name="facebook"
+                                color="white"
+                                size={25}
                             />
                         </TouchableOpacity>
                     </View>
