@@ -56,7 +56,7 @@ class HomeScreen extends Component {
     render() {
         return (
             <>
-                <Header title={'Home'} />
+                <Header title={'Home'} navigation={this.props.navigation} />
 
                 <View style={Styles.topContainer}>
                     <View>

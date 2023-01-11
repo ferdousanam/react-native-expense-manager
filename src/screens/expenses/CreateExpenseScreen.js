@@ -48,7 +48,12 @@ class CreateExpenseScreen extends Component {
     };
 
     renderHeader = () => {
-        return <Header title={'Create Expense'} />;
+        return (
+            <Header
+                title={'Create Expense'}
+                navigation={this.props.navigation}
+            />
+        );
     };
 
     render() {

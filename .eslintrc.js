@@ -15,5 +15,16 @@ module.exports = {
             },
         ],
         'no-shadow': 'off',
+        'max-len': [
+            'error',
+            {
+                code: 120,
+                tabWidth: 4,
+                ignoreComments: true, //"comments": 80
+                ignoreUrls: true,
+                ignoreStrings: true,
+                ignoreTemplateLiterals: true,
+            },
+        ],
     },
 };

@@ -14,7 +14,9 @@ class EditExpenseScreen extends CreateExpenseScreen {
     }
 
     renderHeader = () => {
-        return <Header title={'Edit Expense'} />;
+        return (
+            <Header title={'Edit Expense'} navigation={this.props.navigation} />
+        );
     };
 
     onSubmit = () => {

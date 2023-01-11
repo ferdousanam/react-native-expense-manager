@@ -1,11 +1,13 @@
 import {StyleSheet} from 'react-native';
+import {COLORS} from '../constants';
 
 export default StyleSheet.create({
     drawerContent: {
         flex: 1,
     },
     userInfoSection: {
-        paddingLeft: 20,
+        padding: 20,
+        backgroundColor: COLORS.primary,
     },
     title: {
         fontSize: 16,

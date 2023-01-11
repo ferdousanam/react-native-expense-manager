@@ -3,8 +3,9 @@ import {Linking, StyleSheet, View} from 'react-native';
 import {Header as HeaderRNE} from '@rneui/themed';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {COLORS} from '../constants';
 
-const Header = ({title}) => {
+const Header = ({title, navigation}) => {
     const openGithub = () => {
         Linking.openURL('https://github.com/ferdousanam');
     };
@@ -16,9 +17,11 @@ const Header = ({title}) => {
     return (
         <>
             <HeaderRNE
+                backgroundColor={COLORS.primary}
                 leftComponent={{
                     icon: 'menu',
                     color: '#fff',
+                    onPress: () => navigation.openDrawer(),
                 }}
                 rightComponent={
                     <View style={styles.headerRight}>
@@ -50,14 +53,6 @@ const Header = ({title}) => {
 };
 
 const styles = StyleSheet.create({
-    headerContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#397af8',
-        marginBottom: 20,
-        width: '100%',
-        paddingVertical: 15,
-    },
     heading: {
         color: 'white',
         fontSize: 22,
@@ -67,11 +62,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         marginTop: 5,
-    },
-    subheaderText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: 'bold',
     },
 });
 
