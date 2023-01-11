@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
-import {View} from 'react-native';
-import {Button} from '@rneui/base';
-import {Icon, Input} from '@rneui/themed';
+import {TouchableOpacity, View} from 'react-native';
+import {Button, Icon, Input} from '@rneui/themed';
 import firestore from '@react-native-firebase/firestore';
+import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import Header from '../../components/Header';
 import Styles from '../../styles';
 
 const initialForm = {
     category: null,
     price: null,
+    date: null,
 };
 
 class CreateExpenseScreen extends Component {
@@ -23,6 +24,26 @@ class CreateExpenseScreen extends Component {
 
     setFormData = (key, value) => {
         this.setState({form: {...this.state.form, [key]: value}});
+    };
+
+    openDatePicker = () => {
+        DateTimePickerAndroid.open({
+            value: this.state.form.date
+                ? new Date(this.state.form.date)
+                : new Date(),
+            maximumDate: new Date(),
+            onChange: (event, selectedDate) => {
+                if (event.type === 'set') {
+                    this.setFormData(
+                        'date',
+                        selectedDate.toISOString().split('T')[0],
+                    );
+                }
+            },
+            mode: 'date',
+            display: 'spinner',
+            is24Hour: true,
+        });
     };
 
     onSubmit = () => {
@@ -63,6 +84,14 @@ class CreateExpenseScreen extends Component {
                 {this.renderHeader()}
 
                 <View style={Styles.topContainer}>
+                    <TouchableOpacity onPress={this.openDatePicker}>
+                        <Input
+                            editable={false}
+                            style={Styles.textInput}
+                            placeholder={'Date'}
+                            value={form.date?.toLocaleString()}
+                        />
+                    </TouchableOpacity>
                     <Input
                         style={Styles.textInput}
                         placeholder={'Category'}

@@ -1,9 +1,19 @@
 import React, {useEffect, useState} from 'react';
+import {createTheme, ThemeProvider} from '@rneui/themed';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {isMountedRef, navigationRef} from './RootNavigation';
 import {COLORS} from '../constants';
 import InitialLoader from './InitialLoader';
 import AfterAuth from './routes/AfterAuth';
+
+const theme = createTheme({
+    lightColors: {
+        primary: COLORS.primary,
+    },
+    darkColors: {
+        primary: COLORS.primary,
+    },
+});
 
 const AppTheme = {
     ...DefaultTheme,
@@ -30,11 +40,11 @@ const Main = props => {
     }
 
     return (
-        <>
+        <ThemeProvider theme={theme}>
             <NavigationContainer ref={navigationRef} theme={AppTheme}>
                 <AfterAuth />
             </NavigationContainer>
-        </>
+        </ThemeProvider>
     );
 };
 

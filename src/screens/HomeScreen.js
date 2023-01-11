@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {FlatList, Text, View} from 'react-native';
-import {Button} from '@rneui/base';
-import {Card, Icon} from '@rneui/themed';
+import {Button, Card, Icon} from '@rneui/themed';
 import firestore from '@react-native-firebase/firestore';
 import Header from '../components/Header';
 import Styles from '../styles';
